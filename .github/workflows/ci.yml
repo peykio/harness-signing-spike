@@ -1,0 +1,24 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      # Product acceptance for slugify, run only once it exists.
+      - name: acceptance
+        run: |
+          [ -f slugify.js ] || exit 0
+          node --input-type=module -e '
+            import assert from "node:assert/strict";
+            const { slugify } = await import(process.cwd() + "/slugify.js");
+            assert.equal(slugify("Crème Brûlée & Co."), "creme-brulee-and-co");
+            assert.equal(slugify("  --Hello,   World!--  "), "hello-world");
+          '
