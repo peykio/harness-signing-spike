@@ -7,7 +7,20 @@ const MINOR = new Set([
   "vs", "vs.", "v.", "from", "into", "onto", "with", "over",
 ]);
 
-const capitalize = (word) => word.replace(/\p{L}/u, (c) => c.toUpperCase());
+// Words with fixed mixed casing that plain capitalization would get wrong.
+const SPECIAL = new Map(
+  [
+    "iPhone", "iPad", "iPod", "iMac", "iOS", "iCloud", "iTunes", "macOS",
+    "eBay", "eBook", "YouTube", "JavaScript", "GitHub", "PayPal",
+  ].map((w) => [w.toLowerCase(), w]),
+);
+
+const capitalize = (word) =>
+  word.replace(
+    /\p{L}+/u,
+    (core) =>
+      SPECIAL.get(core.toLowerCase()) ?? core[0].toUpperCase() + core.slice(1),
+  );
 
 export function titleCase(text) {
   const words = text.trim().split(/\s+/).filter(Boolean);

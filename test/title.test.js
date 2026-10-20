@@ -27,3 +27,11 @@ test("handles leading punctuation and extra whitespace", () => {
   assert.equal(titleCase("  \"the  road\"  "), "\"The Road\"");
   assert.equal(titleCase(""), "");
 });
+
+test("keeps the casing of known mixed-case words", () => {
+  assert.equal(
+    titleCase("iphone and ipad tips for the busy"),
+    "iPhone and iPad Tips for the Busy",
+  );
+  assert.equal(titleCase("selling on ebay"), "Selling on eBay");
+});
