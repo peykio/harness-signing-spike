@@ -12,13 +12,15 @@ jobs:
         with:
           node-version: 22
       - run: npm test
-      # Product acceptance for slugify, run only once it exists.
+      # Product acceptance cases, kept in the TITLE_CASES repository variable; runs once title.js exists.
       - name: acceptance
+        env:
+          CASES: ${{ vars.TITLE_CASES }}
         run: |
-          [ -f slugify.js ] || exit 0
+          [ -f title.js ] || exit 0
           node --input-type=module -e '
             import assert from "node:assert/strict";
-            const { slugify } = await import(process.cwd() + "/slugify.js");
-            assert.equal(slugify("Crème Brûlée & Co."), "creme-brulee-and-co");
-            assert.equal(slugify("  --Hello,   World!--  "), "hello-world");
+            const { titleCase } = await import(process.cwd() + "/title.js");
+            for (const [input, want] of JSON.parse(process.env.CASES))
+              assert.equal(titleCase(input), want, `titleCase(${JSON.stringify(input)})`);
           '
