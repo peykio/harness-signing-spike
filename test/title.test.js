@@ -20,3 +20,9 @@ test("collapses extra whitespace and handles empty input", () => {
   assert.equal(titleCase("  of mice   and men "), "Of Mice and Men");
   assert.equal(titleCase(""), "");
 });
+
+test("keeps the casing of product names", () => {
+  assert.equal(titleCase("iphone and ipad tips for the busy"), "iPhone and iPad Tips for the Busy");
+  assert.equal(titleCase("selling on ebay: a macos guide"), "Selling on eBay: A macOS Guide");
+  assert.equal(titleCase("ios-only apps"), "iOS-Only Apps");
+});

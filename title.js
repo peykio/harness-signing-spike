@@ -6,7 +6,17 @@ const MINOR = new Set([
   "as", "at", "by", "in", "of", "off", "on", "per", "to", "up", "via",
 ]);
 
-const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+// Product names that keep their own casing wherever they appear.
+const BRANDS = new Map(
+  ["iPhone", "iPad", "iPod", "iMac", "iCloud", "iOS", "iPadOS", "macOS", "watchOS", "tvOS", "eBay"]
+    .map((name) => [name.toLowerCase(), name]),
+);
+
+const capitalize = (word) => {
+  const [, core, rest] = word.match(/^(.*?)([^\p{L}\p{N}]*)$/u);
+  const brand = BRANDS.get(core.toLowerCase());
+  return brand ? brand + rest : word.charAt(0).toUpperCase() + word.slice(1);
+};
 
 export function titleCase(text) {
   const words = text.trim().split(/\s+/).filter(Boolean);
